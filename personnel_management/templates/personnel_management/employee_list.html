@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>員工列表</title>
+</head>
+<body>
+    <h1>員工列表</h1>
+    <table>
+        <tr>
+            <th>姓名</th>
+            <th>年齡</th>
+            <th>聯繫方式</th>
+            <th>住址</th>
+            <th>操作</th>
+        </tr>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.name }}</td>
+            <td>{{ employee.age }}</td>
+            <td>{{ employee.contact_number }}</td>
+            <td>{{ employee.address }}</td>
+            <td>
+                <a href="{% url 'update_employee' employee.id %}">更新</a>  <!-- 更新連結 -->
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'home' %}">返回首頁</a>
+</body>
+</html>

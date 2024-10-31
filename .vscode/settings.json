@@ -1,0 +1,9 @@
+{
+    "C_Cpp.default.configurationProvider": "",
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true
+    },
+    "C_Cpp.formatting": "clangFormat"
+}

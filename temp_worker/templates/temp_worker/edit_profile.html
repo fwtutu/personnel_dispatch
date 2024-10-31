@@ -1,0 +1,19 @@
+<!-- 在 temp_worker/templates/temp_worker/edit_profile.html -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>編輯個人資料</title>
+</head>
+<body>
+    <h1>編輯個人資料</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- 這會顯示表單中的所有字段 -->
+        <button type="submit">保存</button>
+    </form>
+    <br>
+    <a href="{% url 'profile' user_id=request.user.id %}">返回個人資料</a>
+
+</body>
+</html>

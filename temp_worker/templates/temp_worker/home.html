@@ -1,0 +1,19 @@
+<!-- 在 temp_worker/templates/temp_worker/home.html -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>首頁</title>
+</head>
+<body>
+    <h1>人力派遣系統</h1>
+    <h1>歡迎, {{ user.username }}!</h1>
+    <ul>
+        <li><a href="{% url 'profile' user_id=user_id %}">人工管理</a></li>
+        <li><a href="#">任務</a></li>
+        <li><a href="#">排班</a></li>
+        <li><a href="#">工時</a></li>
+        <li><a href="#">客服</a></li>
+    </ul>
+</body>
+</html>

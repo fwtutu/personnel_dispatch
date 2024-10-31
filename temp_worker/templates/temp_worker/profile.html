@@ -1,0 +1,30 @@
+<!-- temp_worker/templates/temp_worker/profile.html -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>個人檔案</title>
+</head>
+<body>
+    <h1>個人檔案</h1>
+
+    {% if employee %}
+        <!-- 已有資料時顯示 -->
+        <p>名稱: {{ employee.name }}</p>
+        <p>年齡: {{ employee.age }}</p>
+        <p>聯絡電話: {{ employee.contact_number }}</p>
+        <p>地址: {{ employee.address }}</p>
+        <a href="{% url 'edit_profile' user_id=request.user.id %}">編輯個人資料</a>
+    {% else %}
+        <!-- 無資料時顯示創建表單 -->
+        <p>目前尚無個人檔案資料，請填寫以下表單來創建檔案。</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}  <!-- 自動生成表單欄位 -->
+            <button type="submit">儲存檔案</button>
+        </form>
+    {% endif %}
+
+    <a href="{% url 'temp_worker_home' %}">返回首頁</a>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更新員工資料</title>
+</head>
+<body>
+    <h1>更新員工資料</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}  <!-- 顯示表單的所有字段 -->
+        <button type="submit">保存</button>  <!-- 提交按鈕 -->
+    </form>
+    <a href="{% url 'employee_list' %}">返回員工列表</a>
+</body>
+</html>
+
+
+<!-- 
+sql 新增員工指令
+python manage.py shell
+
+from personnel_management.models import Employee
+
+# 創建一個新的員工記錄
+employee = Employee(name='測試員工', age=30, contact_number='123456789', address='某地址')
+employee.save() 
+
+-->
