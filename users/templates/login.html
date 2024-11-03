@@ -1,6 +1,4 @@
 
-
-
 <h2>登入</h2>
 {% if messages %}
     <ul class="messages">
@@ -18,3 +16,14 @@
 </form>
 
 <a href="{% url 'users_home' %}">回到首頁</a>
+
+
+<script>
+    // 自動隱藏訊息
+    setTimeout(function() {
+        const messageList = document.querySelector('.messages');
+        if (messageList) {
+            messageList.style.display = 'none';
+        }
+    }, 5000); // 設定 5 秒後隱藏訊息
+</script>

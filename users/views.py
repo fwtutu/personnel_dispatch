@@ -23,7 +23,7 @@ def register(request):
         if form.is_valid():  # 驗證表單
             user = form.save()  # 創建用戶
             print(f"Created user: {user.username}, user_id: {user.id}")  
-            Rank.objects.get_or_create(user=user)  # 檢查用戶是否已經有 Rank  如果不存在則創建 創建 Rank，並默認角色為客戶
+            Rank.objects.get_or_create(user=user)  # 檢查用戶是否已經有 Rank  如果不存在則創建 創建 Rank，並默認角色為管理員
             # login(request, user)  # 登入用戶
             # messages.success(request, "註冊成功！您已成功登入。")  # 註冊成功訊息
             # 創建相應的 Employee 記錄
@@ -54,7 +54,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, "登入成功！")  # 登入成功訊息
+                # messages.success(request, "登入成功！")  # 登入成功訊息
                 return redirect("login_success")  # 登入成功跳轉登入成功頁面
             else:
                 messages.error(request, "登入失敗，請檢查您的使用者名稱和密碼。")  # 登入失敗訊息
@@ -73,9 +73,6 @@ from django.contrib.auth import logout
 def logout_view(request):
     logout(request)  # 退出登入
     return redirect("home")  # 登出後跳轉首頁
-
-
-
 
 
 # 用戶角色判定

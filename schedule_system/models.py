@@ -7,6 +7,7 @@ class Schedule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)    #只用employee的話post抓不到user id，所以在加這行
     start_datetime = models.DateTimeField()  # 開始日期時間
     end_datetime = models.DateTimeField()    # 結束日期時間
+    calendar_title = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return f"{self.employee} - {self.start_datetime} to {self.end_datetime}"

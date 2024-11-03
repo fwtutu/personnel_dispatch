@@ -4,7 +4,7 @@ from .models import Schedule
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
-        fields = ['employee', 'start_datetime', 'end_datetime']
+        fields = ['employee', 'start_datetime', 'end_datetime','calendar_title']
         widgets = {
             'start_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'end_datetime': forms.DateTimeInput(attrs={'type': 'datetime-local'}),

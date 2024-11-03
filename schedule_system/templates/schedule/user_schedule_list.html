@@ -1,33 +1,87 @@
-<h2>我的排班</h2>
-<table>
-    <thead>
-        <tr>
-            <th>開始時間</th>
-            <th>結束時間</th>
-            <th>工時</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for schedule in schedules %}
-            <tr>
-                <td>{{ schedule.start_datetime }}</td>
-                <td>{{ schedule.end_datetime }}</td>
-                <td>{{ schedule.hours_worked|floatformat:0 }}</td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="3">目前沒有排班記錄。</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
-<div class="pagination">
-    {% if schedules.has_previous %}
-        <a href="?page={{ schedules.previous_page_number }}">上一頁</a>
-    {% endif %}
-    <span>第 {{ schedules.number }} 頁，共 {{ schedules.paginator.num_pages }} 頁</span>
-    {% if schedules.has_next %}
-        <a href="?page={{ schedules.next_page_number }}">下一頁</a>
-    {% endif %}
-</div>
+    <head>
+        <title>排班系統</title>
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+    </head>
+
+    <h2>我的排班</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>開始時間</th>
+                <th>結束時間</th>
+                <th>工時</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for schedule in schedules %}
+                <tr>
+                    <td>{{ schedule.start_datetime }}</td>
+                    <td>{{ schedule.end_datetime }}</td>
+                    <td>{{ schedule.hours_worked|floatformat:0 }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">目前沒有排班記錄。</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; 第一頁</a>
+                <a href="?page={{ page_obj.previous_page_number }}">上一頁</a>
+            {% endif %}
+
+            <span class="current">
+                第 {{ page_obj.number }} 頁，共 {{ paginator.num_pages }} 頁
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">下一頁</a>
+                <a href="?page={{ paginator.num_pages }}">最後一頁 &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <div id="calendar"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: '/schedule_system/schedule/api/UserScheduleData/',  // API 的路徑
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            eventClick: function(info) {
+                // 獲取排班的開始時間、結束時間和工時
+                var start = info.event.start; // 開始時間
+                var end = info.event.end; // 結束時間
+                var hoursWorked = info.event.extendedProps.hoursWorked; // 工時
+
+                // 格式化時間
+                var startTime = start ? start.toLocaleString() : '未知';
+                var endTime = end ? end.toLocaleString() : '未知';
+                
+                // 在這裡處理事件點擊事件
+                alert('Event: ' + info.event.title +
+                    '\n開始時間: ' + start + 
+                    '\n結束時間: ' + end + 
+                    '\n工時: ' + hoursWorked + ' 小時'
+                );            
+            },
+            eventContent: function(arg) {
+                // 只顯示標題，隱藏時間
+                return { html: arg.event.title }; // 只返回標題，隱藏時間部分
+            }
+        });
+        calendar.render();
+    });
+
+    </script>

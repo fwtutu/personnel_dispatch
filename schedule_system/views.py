@@ -6,10 +6,14 @@ from .forms import ScheduleForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class ScheduleCreateView(LoginRequiredMixin,View):
     login_url = '/user/login/'  # 如果未登入，重導向的登入頁面
+
     def get(self, request):
         form = ScheduleForm(user=request.user)
         return render(request, 'schedule/create_schedule.html', {'form': form})
@@ -34,3 +38,20 @@ class UserScheduleListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Schedule.objects.filter(employee=self.request.user.employee).order_by('start_datetime')
+
+
+@login_required  # 使用裝飾器
+def UserScheduleData(request):
+    schedules = Schedule.objects.filter(employee=request.user.employee)
+    events = []
+    for schedule in schedules:
+        events.append({
+            "title": schedule.calendar_title if schedule.calendar_title else schedule.employee.name,  # calendar_title  
+            "start": schedule.start_datetime.isoformat(),
+            "end": schedule.end_datetime.isoformat(),
+            "extendedProps": { 
+                "hoursWorked": schedule.hours_worked  # alert使用
+                }
+        })
+    return JsonResponse(events, safe=False)
+    
