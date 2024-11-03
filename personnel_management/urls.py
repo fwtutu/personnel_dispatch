@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import home, update_employee ,employee_list,ScheduleListView,ScheduleDeleteView
+from .views import home, update_employee ,employee_list,ScheduleListView,ScheduleDeleteView,ScheduleListData
+from . import views
+
 
 
 urlpatterns = [
@@ -8,4 +10,6 @@ urlpatterns = [
     path('employees/', employee_list, name='employee_list'),  # 員工列表視圖
     path('schedule/', ScheduleListView.as_view(), name='schedule_list'),
     path('schedule/delete/<int:pk>/', ScheduleDeleteView.as_view(), name='schedule_delete'),  # 刪除URL
+    path('api/ScheduleListData/',views.ScheduleListData, name='ScheduleListData'),
+
 ]

@@ -1,5 +1,8 @@
 
-<h2>排班列表</h2>
+<head>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+</head>
+
 <table>
     <thead>
         <tr>
@@ -48,3 +51,40 @@
     </span>
 </div>
 
+<div id="calendar"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: '/personnel_management/api/ScheduleListData/',  // API 的路徑
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            eventClick: function(info) {
+                // 獲取排班的開始時間、結束時間和工時
+                var start = info.event.start; // 開始時間
+                var end = info.event.end; // 結束時間
+                var hoursWorked = info.event.extendedProps.hoursWorked; // 工時
+
+                // 格式化時間
+                var startTime = start ? start.toLocaleString() : '未知';
+                var endTime = end ? end.toLocaleString() : '未知';
+
+                // 在這裡顯示所有資訊
+                alert('標題: ' + info.event.title + 
+                    '\n開始時間: ' + startTime + 
+                    '\n結束時間: ' + endTime + 
+                    '\n工時: ' + hoursWorked + ' 小時');
+            },
+            eventContent: function(arg) {
+                // 只顯示標題，隱藏時間
+                return { html: arg.event.title }; // 只返回標題，隱藏時間部分
+            }
+        });
+        calendar.render();
+    });
+</script>

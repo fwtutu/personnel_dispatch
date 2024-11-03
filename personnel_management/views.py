@@ -5,6 +5,7 @@ from schedule_system.models import Schedule # 引入 Employee 模型
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView
+from django.http import JsonResponse
 
 
 def home(request):
@@ -42,3 +43,18 @@ class ScheduleDeleteView(DeleteView):
     model = Schedule
     template_name = 'personnel_management/schedule_confirm_delete.html'
     success_url = reverse_lazy('schedule_list')  # 刪除成功後重導向的URL
+
+
+def ScheduleListData(request):
+    schedules = Schedule.objects.all()  # 獲取所有排班資料
+    events = []
+    for schedule in schedules:
+        events.append({
+            "title": schedule.calendar_title if schedule.calendar_title else schedule.employee.name,  # 使用日曆標題或員工名稱
+            "start": schedule.start_datetime.isoformat(),
+            "end": schedule.end_datetime.isoformat(),
+            "extendedProps": {
+                "hoursWorked": schedule.hours_worked  # 工時
+            }
+        })
+    return JsonResponse(events, safe=False)

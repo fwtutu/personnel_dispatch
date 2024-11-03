@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 
+
 class ScheduleCreateView(LoginRequiredMixin,View):
     login_url = '/user/login/'  # 如果未登入，重導向的登入頁面
 
