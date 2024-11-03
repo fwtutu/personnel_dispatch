@@ -5,6 +5,7 @@ from .models import Schedule
 from .forms import ScheduleForm
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
 
 
 class ScheduleCreateView(LoginRequiredMixin,View):
@@ -23,3 +24,13 @@ class ScheduleCreateView(LoginRequiredMixin,View):
             schedule.save()
             messages.success(request, '排班已成功提交！')
         return render(request, 'schedule/create_schedule.html', {'form': form})
+
+
+class UserScheduleListView(LoginRequiredMixin, ListView):
+    model = Schedule
+    template_name = 'schedule/user_schedule_list.html'  # 新模板路徑
+    context_object_name = 'schedules'
+    paginate_by = 10  # 每頁顯示 10 筆排班
+
+    def get_queryset(self):
+        return Schedule.objects.filter(employee=self.request.user.employee).order_by('start_datetime')

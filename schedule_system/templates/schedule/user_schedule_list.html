@@ -1,0 +1,33 @@
+<h2>我的排班</h2>
+<table>
+    <thead>
+        <tr>
+            <th>開始時間</th>
+            <th>結束時間</th>
+            <th>工時</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for schedule in schedules %}
+            <tr>
+                <td>{{ schedule.start_datetime }}</td>
+                <td>{{ schedule.end_datetime }}</td>
+                <td>{{ schedule.hours_worked|floatformat:0 }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">目前沒有排班記錄。</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {% if schedules.has_previous %}
+        <a href="?page={{ schedules.previous_page_number }}">上一頁</a>
+    {% endif %}
+    <span>第 {{ schedules.number }} 頁，共 {{ schedules.paginator.num_pages }} 頁</span>
+    {% if schedules.has_next %}
+        <a href="?page={{ schedules.next_page_number }}">下一頁</a>
+    {% endif %}
+</div>
