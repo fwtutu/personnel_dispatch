@@ -12,7 +12,7 @@ from personnel_management.models import Employee
 
 
 # 首頁
-def home(request):
+def users_home(request):
     return render(request, "home.html")
 
 # 註冊功能
@@ -35,7 +35,7 @@ def register(request):
                 user_id=user.id  # 將 user_id 連接到 Employee
             )
 
-            return redirect("home")  # 成功後重定向到首頁
+            return redirect("users_home")  # 成功後重定向到首頁
         else:
             messages.error(request, "註冊失敗，請檢查您的資料。")  # 註冊失敗訊息    
     else:

@@ -8,10 +8,11 @@
     </ul>
 {% endif %}
 
-
-
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>{{ form.employee.label_tag }} {{ form.employee }} <!-- 顯示不可編輯的員工欄位 --></p>
+    <p>{{ form.start_datetime.label_tag }} {{ form.start_datetime }}</p>
+    <p>{{ form.end_datetime.label_tag }} {{ form.end_datetime }}</p>
+
     <button type="submit">添加排班</button>
 </form>

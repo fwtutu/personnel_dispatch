@@ -4,16 +4,22 @@ from django.views import View
 from .models import Schedule
 from .forms import ScheduleForm
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class ScheduleCreateView(View):
+class ScheduleCreateView(LoginRequiredMixin,View):
+    login_url = '/user/login/'  # 如果未登入，重導向的登入頁面
     def get(self, request):
-        form = ScheduleForm()
+        form = ScheduleForm(user=request.user)
         return render(request, 'schedule/create_schedule.html', {'form': form})
 
     def post(self, request):
-        form = ScheduleForm(request.POST)
+
+        form = ScheduleForm(request.POST,user=request.user)
         if form.is_valid():
-            form.save()
+            schedule = form.save(commit=False)     
+            schedule.user = request.user  # #只用employee的話抓不到user id，所以在加這行
+            schedule.employee = request.user.employee   # 將排班記錄的員工設置為當前使用者
+            schedule.save()
             messages.success(request, '排班已成功提交！')
         return render(request, 'schedule/create_schedule.html', {'form': form})

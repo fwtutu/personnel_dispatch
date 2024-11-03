@@ -11,7 +11,7 @@ from django.urls import reverse
 
 
 @login_required
-def home(request):
+def temp_worker_home(request):
     user = request.user  # 取得目前登入的使用者
     context = {
         'username': user.username,
