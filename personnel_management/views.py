@@ -1,24 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee
 from .forms import EmployeeForm
+from schedule_system.models import Schedule # 引入 Employee 模型
+from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
 
 
 def home(request):
     return render(request, 'personnel_management/home.html')
-
-    
-# def update_employee(request, employee_id):
-#     employee = get_object_or_404(Employee, id=employee_id)
-
-#         if request.method == 'POST':
-#             form = EmployeeForm(request.POST, instance=employee)
-#             if form.is_valid():
-#                 form.save()
-#                 return redirect('employee_list')  # 更新成功後重定向到首頁
-#         else:
-#         form = EmployeeForm(instance=employee)
-
-#     return render(request, 'personnel_management/update_employee.html', {'form': form, 'employee': employee})
 
 
 def update_employee(request, employee_id):
@@ -38,3 +28,17 @@ def update_employee(request, employee_id):
 def employee_list(request):
     employees = Employee.objects.all()  # 獲取所有員工資料
     return render(request, 'personnel_management/employee_list.html', {'employees': employees})
+
+
+class ScheduleListView(ListView):
+    model = Schedule
+    template_name = 'personnel_management/schedule_list.html'  # 模板路徑
+    context_object_name = 'schedules'
+    ordering = ['start_datetime']  # 依據開始時間排序
+    paginate_by = 10  # 每頁顯示 10 條記錄
+
+    
+class ScheduleDeleteView(DeleteView):
+    model = Schedule
+    template_name = 'personnel_management/schedule_confirm_delete.html'
+    success_url = reverse_lazy('schedule_list')  # 刪除成功後重導向的URL
