@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客戶列表</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>客戶列表</h2>
+    <table>
+        <tr>
+            <th>姓名</th>
+            <th>電話</th>
+            <th>住址</th>
+            <th>查看預約</th>
+        </tr>
+        {% for customer in customers %}
+        <tr>
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.contact_number }}</td>
+            <td>{{ customer.address }}</td>
+            <td><a href="{% url 'customer_appointments' customer.id %}">查看預約</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'home' %}">返回首頁</a>
+</body>
+</html>

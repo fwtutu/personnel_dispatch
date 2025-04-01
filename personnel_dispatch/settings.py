@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'users',
     'personnel_management',
     'temp_worker',
-    'schedule_system'
+    'schedule_system',
+    'customer_system'
 ]
 
 MIDDLEWARE = [

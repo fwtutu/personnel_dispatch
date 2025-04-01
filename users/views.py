@@ -23,7 +23,8 @@ def register(request):
         if form.is_valid():  # 驗證表單
             user = form.save()  # 創建用戶
             print(f"Created user: {user.username}, user_id: {user.id}")  
-            Rank.objects.get_or_create(user=user)  # 檢查用戶是否已經有 Rank  如果不存在則創建 創建 Rank，並默認角色為管理員
+            # Rank.objects.get_or_create(user=user)  # 檢查用戶是否已經有 Rank  如果不存在則創建 創建 Rank，並默認角色為管理員
+            Rank.objects.create(user=user, role='dispatcher') 
             # login(request, user)  # 登入用戶
             # messages.success(request, "註冊成功！您已成功登入。")  # 註冊成功訊息
             # 創建相應的 Employee 記錄
@@ -41,32 +42,81 @@ def register(request):
     else:
         form = RegisterForm()  # 初始化空表單
         
-    return render(request, "register.html", {"form": form})
+    return render(request, "register_employee.html", {"form": form})
+
+
+def register_customer(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            Rank.objects.create(user=user, role='customer')  # 設置為客戶角色
+            messages.success(request, "客戶註冊成功！")
+            return redirect("users_home")
+        else:
+            messages.error(request, "註冊失敗，請檢查您的資料。")
+    else:
+        form = RegisterForm()
+    return render(request, "register_customer.html", {"form": form})
+
+
+
 
 
 # 登錄功能
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
 def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
+
         if form.is_valid():
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             user = authenticate(username=username, password=password)
+
             if user is not None:
-                login(request, user)
-                # messages.success(request, "登入成功！")  # 登入成功訊息
-                return redirect("login_success")  # 登入成功跳轉登入成功頁面
+                try:
+                    rank = Rank.objects.get(user=user)  # 根據使用者查找 Rank
+                    login(request, user)
+                    
+                    # 登入成功後，根據角色跳轉到對應頁面
+                    if rank.role == 'dispatcher':
+                        return redirect('temp_worker_home')  # 員工首頁
+                    elif rank.role == 'customer':
+                        return redirect('customer_home')  # 客戶首頁
+                    else:
+                        messages.error(request, "無權限登入此系統")
+                        return redirect('login')  # 如果沒有對應角色，重新導回登入頁面
+                except Rank.DoesNotExist:
+                    messages.error(request, "找不到該用戶的角色")
             else:
-                messages.error(request, "登入失敗，請檢查您的使用者名稱和密碼。")  # 登入失敗訊息
+                messages.error(request, "登入失敗，請檢查您的使用者名稱和密碼。")
+        else:
+            messages.error(request, "表單無效，請檢查輸入。")
     else:
         form = AuthenticationForm()
+
     return render(request, "login.html", {"form": form})
+
+
 
 # 登錄成功頁面
 
 @login_required 
 def login_success(request):
-    return render(request, "login_success.html")
+    rank = Rank.objects.get(user=request.user)
+    
+    # 根據用戶角色導向不同首頁
+    if rank.role == 'dispatcher':
+        return redirect('temp_worker_home')  # 員工首頁
+    elif rank.role == 'customer':
+        return redirect('customer_home')  # 客戶首頁
+    else:
+        return render(request, "login_success.html")
 
 from django.contrib.auth import logout
 

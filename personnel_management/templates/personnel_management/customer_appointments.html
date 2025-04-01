@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ customer.name }} 的預約紀錄</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h2>{{ customer.name }} 的預約紀錄</h2>
+    <table>
+        <tr>
+            <th>預約地點</th>
+            <th>預約時間</th>
+            <th>特別需求</th>
+            <th>狀態</th>
+            <th>配對員工</th>
+            <th>操作</th>
+        </tr>
+        {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment.care_location }}</td>
+            <td>{{ appointment.appointment_datetime }}</td>
+            <td>{{ appointment.special_requirements }}</td>
+            <td>{{ appointment.get_status_display }}</td>
+            <td>
+                {% if appointment.status == "confirmed" %}
+                    <p>配對成功</p>
+                    <p>員工姓名：{{ appointment.appointmentmatch.schedule.employee.name }}</p>
+                    <p>員工排班時間：{{ appointment.appointmentmatch.schedule.start_datetime }} - {{ appointment.appointmentmatch.schedule.end_datetime }}</p>
+                {% else %}
+                    尚未配對
+                {% endif %}
+            </td>
+            <td>
+                {% if appointment.status == "pending" %}
+                <a href="{% url 'match_appointment' appointment.id %}" class="btn">配對員工</a>
+                {% else %}
+                    已配對
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'customer_list' %}">返回客戶列表</a>
+</body>
+</html>

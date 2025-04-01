@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客戶資料</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+        form {
+            text-align: left;
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>客戶資料</h2>
+
+        {% if profile.name %}
+            <p><strong>姓名：</strong> {{ profile.name }}</p>
+            <p><strong>電話：</strong> {{ profile.contact_number }}</p>
+            <p><strong>住址：</strong> {{ profile.address }}</p>
+            <p><strong>服務時間：</strong> {{ profile.service_time }}</p>
+        {% else %}
+            <p>尚未填寫客戶資料，請填寫以下表單：</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_name">姓名：</label>
+            {{ form.name }}
+            
+            <label for="id_contact_number">電話：</label>
+            {{ form.contact_number }}
+            
+            <label for="id_address">住址：</label>
+            {{ form.address }}
+            
+            <button type="submit">儲存資料</button>
+        </form>
+
+        <a class="back-link" href="{% url 'customer_home' %}">返回首頁</a>
+
+    </div>
+
+</body>
+</html>

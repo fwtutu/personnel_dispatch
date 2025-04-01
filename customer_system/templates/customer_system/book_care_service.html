@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>預約照護服務</title>
+</head>
+<body>
+    <div class="container">
+        <h2>預約照護服務</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: green;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit">確認預約</button>
+            <a href="{% url 'customer_home' %}">返回首頁</a>
+        </form>
+    </div>
+</body>
+</html>

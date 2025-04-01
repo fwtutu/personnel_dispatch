@@ -23,4 +23,5 @@ urlpatterns = [
     path('personnel_management/', include('personnel_management.urls')),
     path('temp_worker/', include('temp_worker.urls')),
     path('schedule_system/', include('schedule_system.urls')),
+    path('customer/', include('customer_system.urls'))
 ]

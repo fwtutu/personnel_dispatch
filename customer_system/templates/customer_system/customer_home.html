@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客戶首頁</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+        .success-message {
+            color: green;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .action-buttons {
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .logout-link {
+            display: block;
+            margin-top: 20px;
+            color: red;
+            text-decoration: none;
+        }
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+        .profile-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+        .profile-info p {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>歡迎來到客戶首頁</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="success-message">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        {% if request.user.is_authenticated %}
+            <p><strong>帳號：</strong> {{ request.user.username }}</p>
+
+            <div class="profile-info">
+                {% if request.user.customerprofile.name %}
+                    <p><strong>姓名：</strong> {{ request.user.customerprofile.name }}</p>
+                {% else %}
+                    <p>尚未填寫客戶資料，請前往 <a href="{% url 'customer_profile' %}">個人資料頁面</a> 更新資訊。</p>
+                {% endif %}
+
+                {% if request.user.customerprofile.contact_number %}
+                    <p><strong>電話：</strong> {{ request.user.customerprofile.contact_number }}</p>
+                {% else %}
+                    <p><strong>電話：</strong> 尚未提供。</p>
+                {% endif %}
+
+                {% if request.user.customerprofile.address %}
+                    <p><strong>住址：</strong> {{ request.user.customerprofile.address }}</p>
+                {% else %}
+                    <p><strong>住址：</strong> 尚未提供。</p>
+                {% endif %}
+
+                <p><strong>服務時間：</strong> {{ request.user.customerprofile.service_time }}</p>
+            </div>
+
+            <div class="action-buttons">
+                <a class="btn" href="{% url 'customer_profile' %}">編輯個人資料</a>
+            </div>
+
+            <a href="{% url 'book_care_service' %}">預約照護服務</a>
+
+            <!-- 顯示預約資料 -->
+            <div class="profile-info">
+                <h3>您的預約資料</h3>
+                {% if appointments.exists %}
+                    <p><strong>預約紀錄：</strong></p>
+                    {% for appointment in appointments %}
+                        <div class="appointment-item" style="background-color: #f9f9f9; margin-bottom: 10px; padding: 10px; border-radius: 8px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);">
+                            <p><strong>預約地點：</strong> {{ appointment.care_location }}</p>
+                            <p><strong>預約時間：</strong> {{ appointment.appointment_datetime }}</p>
+                            <p><strong>特定需求：</strong> {{ appointment.special_requirements }}</p>
+                            <p><strong>狀態：</strong> {{ appointment.get_status_display }}</p>
+                        
+                            {% if appointment.status == "confirmed" %}
+                                <!-- 顯示配對到的員工資料 -->
+                                {% if appointment.appointmentmatch %}
+                                    <p><strong>配對員工姓名：</strong> {{ appointment.appointmentmatch.schedule.employee.name }}</p>
+                                    <p><strong>配對員工排班時間：</strong> {{ appointment.appointmentmatch.schedule.start_datetime }} - {{ appointment.appointmentmatch.schedule.end_datetime }}</p>
+                                {% else %}
+                                    <p>尚未配對員工。</p>
+                                {% endif %}
+                            {% endif %}
+                        
+                            {% if appointment.status == "pending" %}
+                                <form method="post" action="{% url 'cancel_appointment' appointment.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" style="color: red;">取消預約</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>您目前沒有預約照護服務。</p>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <p>請 <a href="{% url 'login' %}">登入</a> 以查看客戶資訊。</p>
+        {% endif %}
+
+        <a class="logout-link" href="{% url 'logout' %}">登出</a>
+    </div>
+
+</body>
+</html>

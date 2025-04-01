@@ -1,0 +1,20 @@
+<h2>您的預約</h2>
+{% if appointment %}
+    <div class="appointment">
+        <p><strong>預約地點：</strong> {{ appointment.care_location }}</p>
+        <p><strong>預約時間：</strong> {{ appointment.appointment_datetime }}</p>
+        <p><strong>特別需求：</strong> {{ appointment.special_requirements }}</p>
+        <p><strong>狀態：</strong> {{ appointment.get_status_display }}</p>
+        
+        {% if appointment.status == "pending" %}
+            <form method="post" action="{% url 'cancel_appointment' appointment.id %}">
+                {% csrf_token %}
+                <button type="submit" style="color: red;">取消預約</button>
+            </form>
+        {% endif %}
+    </div>
+{% else %}
+    <p>您目前沒有預約照護服務。</p>
+{% endif %}
+
+<a href="{% url 'book_care_service' %}">預約特定照護服務</a>
