@@ -138,3 +138,10 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 設定 BASE_DIR 為 Path 物件
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # 根目錄下的 static 資料夾
+]

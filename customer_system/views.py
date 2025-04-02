@@ -5,8 +5,34 @@ from django.contrib.auth.decorators import login_required
 from .models import CustomerProfile, CareAppointment
 from .forms import CustomerProfileForm, CareAppointmentForm
 from django.contrib import messages
+from personnel_management.models import Employee
+
+from users.models import Rank
+
+
+
+
+def customer_required(view_func):
+    """
+    檢查用戶的 rank 是否為 customer
+    """
+    def _wrapped_view(request, *args, **kwargs):
+        try:
+            # 確保當前用戶有 Rank 並且 role 是 'customer'
+            rank = Rank.objects.get(user=request.user)
+            if rank.role == 'customer':
+                return view_func(request, *args, **kwargs)
+            else:
+                messages.error(request, "您沒有權限查看此頁面。")
+                return redirect('home')  # 可以根據需求改成其他頁面
+        except Rank.DoesNotExist:
+            messages.error(request, "用戶資料錯誤，無法檢查角色。")
+            return redirect('home')  # 若用戶沒有 Rank 設定，也可以重定向到其他頁面
+    return _wrapped_view
+
 
 @login_required
+@customer_required
 def customer_home(request):
     # 獲取用戶的所有預約，但排除已取消的預約
     appointments = CareAppointment.objects.filter(user=request.user).exclude(status="cancelled")
@@ -15,8 +41,8 @@ def customer_home(request):
 
 
 
-
 @login_required
+@customer_required
 def customer_profile(request):
     """ 客戶資料填寫與顯示 """
     profile, created = CustomerProfile.objects.get_or_create(user=request.user)
@@ -38,6 +64,7 @@ def customer_profile(request):
 
 # 預約照護服務
 @login_required
+@customer_required
 def book_care_service(request):
     if request.method == "POST":
         form = CareAppointmentForm(request.POST)
@@ -50,6 +77,10 @@ def book_care_service(request):
             customer_profile = CustomerProfile.objects.get(user=request.user)
             care_appointment.customer = customer_profile  # 關聯到 customer_profile
 
+            # 配對員工邏輯
+            employee = Employee.objects.first()  # 這裡簡單示範，實際中可能有配對邏輯
+            care_appointment.employee = employee  # 保存配對的員工
+
             care_appointment.save()
 
             messages.success(request, "您的預約已成功提交！")
@@ -61,6 +92,7 @@ def book_care_service(request):
 
 
 @login_required
+@customer_required
 def cancel_appointment(request, appointment_id):
     # 使用 get_object_or_404 來獲取對應的預約資料
     appointment = get_object_or_404(CareAppointment, id=appointment_id, user=request.user)
@@ -73,3 +105,19 @@ def cancel_appointment(request, appointment_id):
         messages.error(request, "無法取消此預約。")
 
     return redirect("customer_home")
+
+
+def long_term_care_home(request):
+    return render(request, 'customer_system/long_term_care/long_term_care_home.html')
+
+def long_term_care_about(request):
+    return render(request, 'customer_system/long_term_care/long_term_care_about.html')
+
+def long_term_care_services(request):
+    return render(request, 'customer_system/long_term_care/long_term_care_services.html')
+
+def long_term_care_application(request):
+    return render(request, 'customer_system/long_term_care/long_term_care_application_process.html')
+
+def long_term_care_contact(request):
+    return render(request, 'customer_system/long_term_care/long_term_care_contact.html')

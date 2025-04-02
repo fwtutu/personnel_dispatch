@@ -22,7 +22,7 @@ class Employee(models.Model):
 
 class AppointmentMatch(models.Model):
     appointment = models.OneToOneField(CareAppointment, on_delete=models.CASCADE, verbose_name="客戶預約")
-    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, unique=True,verbose_name="員工排班")
+    schedule = models.OneToOneField(Schedule, on_delete=models.CASCADE,verbose_name="員工排班")
     matched_at = models.DateTimeField(auto_now_add=True, verbose_name="配對時間")
 
     def __str__(self):

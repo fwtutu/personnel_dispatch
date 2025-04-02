@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>長照服務申請流程</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            width: 60%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            margin-top: 20px;
+            text-decoration: underline;
+        }
+        .action-buttons {
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>長照服務申請流程</h2>
+
+        <p>以下是長照服務的申請流程，請依照步驟操作：</p>
+
+        <div class="section-title">1. 專員訪視</div>
+        <p>衛生局照管中心致電申請者確認評估日，並派專員到宅評估個案的長照需求等級，核定可補助的金額。</p>
+
+        <div class="section-title">2. 規劃服務</div>
+        <p>個管師根據個案的行動功能衰弱情況，與照顧者共同擬定適當的長照服務內容與服務時間。</p>
+
+        <div class="section-title">3. 連接居服機構</div>
+        <p>安德利個管師會協調居服機構，由居家督導確認服務時間及服務內容，並派遣適合的居家服務員，並進行簽約。</p>
+
+        <div class="section-title">4. 開始服務</div>
+        <p>居家服務員將根據規劃的計畫內容，開始提供居家照顧服務。</p>
+
+        <div class="action-buttons">
+            <a class="btn" href="{% url 'long_term_care_home' %}">返回長照服務專區</a>
+        </div>
+    </div>
+
+</body>
+</html>

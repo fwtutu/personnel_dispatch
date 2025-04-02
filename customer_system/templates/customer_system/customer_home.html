@@ -68,9 +68,14 @@
     </style>
 </head>
 <body>
+    
 
     <div class="container">
         <h2>歡迎來到客戶首頁</h2>
+
+        <div class="navbar">
+        <a href="{% url 'long_term_care_home' %}">長照服務專區</a>
+    </div>
 
         {% if messages %}
             {% for message in messages %}
@@ -126,7 +131,8 @@
                                 {% if appointment.appointmentmatch %}
                                     <p><strong>配對員工姓名：</strong> {{ appointment.appointmentmatch.schedule.employee.name }}</p>
                                     <p><strong>配對員工排班時間：</strong> {{ appointment.appointmentmatch.schedule.start_datetime }} - {{ appointment.appointmentmatch.schedule.end_datetime }}</p>
-                                {% else %}
+                                    <p><strong>配對員工電話：</strong> {{ appointment.appointmentmatch.schedule.employee.contact_number }}</p>
+                                    {% else %}
                                     <p>尚未配對員工。</p>
                                 {% endif %}
                             {% endif %}
